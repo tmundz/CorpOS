@@ -11,4 +11,4 @@ all: ./bin/boot.bin
 
 clean:
 	rm -rf ./bin/boot.bin
-	rm -rf ./bin/kernel.bin
+	rm -rf ./bin/os.bin
