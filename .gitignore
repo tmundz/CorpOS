@@ -1,6 +1,26 @@
+# Rust-specific
 /target
+**/*.rs.bk
 
+# Generated assembly and binary files
+/bin/*
+/build/*
 
-build/
+# Editor and IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
 
-bin/
+# System-specific
+.DS_Store
+Thumbs.db
+
+# Other common files to ignore
+*.log
+*.tmp
+*.temp
+
+# Cargo lock file for libraries/binaries, uncomment if you want to ignore
+# Cargo.lock
+
