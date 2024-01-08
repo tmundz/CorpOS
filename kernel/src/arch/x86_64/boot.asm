@@ -113,7 +113,7 @@ enable_long:
 
   jmp 0x08:start64
 
-
+[bits 64]
 start64:
   mov ax, 0x10
   mov ds, ax
