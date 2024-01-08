@@ -18,7 +18,7 @@ $(ASM_BIN): $(ASM_SRC)
 
 # Build the Rust kernel
 $(RUST_BIN):
-	cd ./kernel && cargo build --target $(RUST_TARGET)
+	cd ./kernel && cargo build -Z build-std=core --target $(RUST_TARGET)
 
 # Clean build artifacts
 clean:
