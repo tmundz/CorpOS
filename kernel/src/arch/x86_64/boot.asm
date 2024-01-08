@@ -65,6 +65,7 @@ load32:
   or eax , 0x1                  ; set the PE bit enable protection
   mov cr0, eax                  ; Write back to cr0
   sti
+  jmp 08h:init_32
 
 [bits 32]
 init_32:
@@ -74,7 +75,59 @@ init_32:
   mov es, ax
   mov fs, ax 
   mov gs, ax
-  call intro
+
+; entering Long Mode
+enable_long:
+  ; enable PAE
+  mov eax, cr4
+  or eax, 0x20      ; set the 5th bit aka PAE bit
+  mov cr4, eax
+
+  ; enable paging
+  PML4_ADDR equ 0x1000
+  PDPT_ADDR equ 0x2000
+  PDT_ADDR equ 0x3000
+
+  mov eax, PDPT_ADDR | 0x3
+  mov dword [PML4_ADDR], eax
+
+  mov eax, PDT_ADDR | 0x3
+  mov dword [PDPT_ADDR], eax
+
+  mov eax, 0x183
+  mov dword [PDT_ADDR], eax
+
+  mov eax, PML4_ADDR
+  mov cr3, eax
+
+  ; enable long mode
+  mov ecx, 0xc0000080       ; EFER MSR number
+  rdmsr                     ; read MSR into EDX:EAX
+  or eax, 0x1000             ; set LME
+  wrmsr                     ; Write back to msr
+  
+  ; Enable paging
+  mov eax, cr0
+  or eax, 0x80000000        ; set PG paging bit to enable paging
+  mov cr0, eax
+
+  jmp 0x08:start64
+
+
+start64:
+  mov ax, 0x10
+  mov ds, ax
+  mov ss, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+
+  mov rsp, 0x7C00   ; Point RSP to a known location
+
+  ;extern kernel_main
+  ;call kernel_main
+  hlt
+
 intro:
   mov si, hipp
   call print_string
